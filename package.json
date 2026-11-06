@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && vite build",
+    "build": "node scripts/sync-frontend.mjs",
     "preview": "vite preview --port 1420 --strictPort",
     "typecheck": "tsc --noEmit",
     "tauri": "tauri",

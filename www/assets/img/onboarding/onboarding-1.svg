@@ -1,0 +1,155 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 400" width="100%" height="100%" fill="none">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="bg-aura-1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3B82F6" stop-opacity="0.12" />
+      <stop offset="50%" stop-color="#6366F1" stop-opacity="0.08" />
+      <stop offset="100%" stop-color="#10B981" stop-opacity="0.04" />
+    </linearGradient>
+
+    <linearGradient id="device-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B" />
+      <stop offset="100%" stop-color="#0F172A" />
+    </linearGradient>
+
+    <linearGradient id="screen-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3B82F6" />
+      <stop offset="60%" stop-color="#6366F1" />
+      <stop offset="100%" stop-color="#8B5CF6" />
+    </linearGradient>
+
+    <linearGradient id="grad-cap" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E1B4B" />
+      <stop offset="100%" stop-color="#312E81" />
+    </linearGradient>
+
+    <linearGradient id="gold-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FDE047" />
+      <stop offset="50%" stop-color="#F59E0B" />
+      <stop offset="100%" stop-color="#D97706" />
+    </linearGradient>
+
+    <linearGradient id="book-cover" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10B981" />
+      <stop offset="100%" stop-color="#059669" />
+    </linearGradient>
+
+    <filter id="soft-shadow" x="-10%" y="-10%" width="125%" height="125%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#0F172A" flood-opacity="0.18" />
+    </filter>
+    <filter id="glow-shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#3B82F6" flood-opacity="0.35" />
+    </filter>
+  </defs>
+
+  <!-- Background Soft Intersecting Rings & Aura -->
+  <circle cx="250" cy="200" r="170" fill="url(#bg-aura-1)" />
+  <circle cx="340" cy="140" r="90" fill="#6366F1" fill-opacity="0.06" />
+  <circle cx="160" cy="260" r="80" fill="#10B981" fill-opacity="0.05" />
+
+  <!-- Orbiting Decorative Rings (Intersecting Space) -->
+  <path d="M 90 220 C 110 120, 390 100, 410 220 C 430 330, 70 320, 90 220 Z" stroke="#6366F1" stroke-width="2" stroke-dasharray="6 8" stroke-opacity="0.35" fill="none" />
+
+  <!-- 1. Central Modern Tablet / Interactive Classroom Screen -->
+  <g filter="url(#soft-shadow)">
+    <!-- Device Frame -->
+    <rect x="120" y="80" width="260" height="180" rx="18" fill="url(#device-grad)" stroke="#334155" stroke-width="3" />
+    <!-- Screen Viewport -->
+    <rect x="132" y="92" width="236" height="156" rx="12" fill="url(#screen-grad)" />
+
+    <!-- Video lecture UI inside screen -->
+    <!-- Window controls -->
+    <circle cx="148" cy="106" r="4" fill="#EF4444" />
+    <circle cx="160" cy="106" r="4" fill="#F59E0B" />
+    <circle cx="172" cy="106" r="4" fill="#10B981" />
+    
+    <!-- Video Waves / Sound Frequency -->
+    <path d="M 148 185 Q 165 160 185 185 T 225 185 T 265 185 T 305 185 T 345 185" fill="none" stroke="#FFFFFF" stroke-opacity="0.25" stroke-width="3" stroke-linecap="round" />
+    <path d="M 158 195 Q 180 170 200 195 T 240 195 T 280 195 T 320 195" fill="none" stroke="#FFFFFF" stroke-opacity="0.35" stroke-width="2.5" stroke-linecap="round" />
+
+    <!-- Glowing Central Play Button on Screen -->
+    <circle cx="250" cy="160" r="26" fill="#FFFFFF" fill-opacity="0.95" filter="url(#glow-shadow)" />
+    <polygon points="244,147 262,160 244,173" fill="#4F46E5" />
+    
+    <!-- Live Teacher / Course Chip inside screen -->
+    <rect x="145" y="218" width="70" height="18" rx="9" fill="#FFFFFF" fill-opacity="0.2" />
+    <circle cx="154" cy="227" r="4" fill="#10B981" />
+    <rect x="163" y="224" width="44" height="6" rx="3" fill="#FFFFFF" fill-opacity="0.9" />
+  </g>
+
+  <!-- 2. Intersecting Element: Graduation Cap (Top Left Overlapping Tablet) -->
+  <g filter="url(#soft-shadow)">
+    <!-- Diamond Cap Top -->
+    <polygon points="120,60 180,38 150,22 90,44" fill="url(#grad-cap)" stroke="#4338CA" stroke-width="1.5" />
+    <!-- Cap Under Skull Base -->
+    <path d="M 108 50 L 108 68 Q 135 84 162 68 L 162 50 Z" fill="#1E1B4B" />
+    <!-- Golden Tassel hanging down over screen -->
+    <circle cx="135" cy="41" r="3" fill="url(#gold-grad)" />
+    <path d="M 135 41 Q 165 48 175 75" fill="none" stroke="url(#gold-grad)" stroke-width="2.5" stroke-linecap="round" />
+    <polygon points="172,75 178,75 177,88 173,88" fill="url(#gold-grad)" />
+  </g>
+
+  <!-- 3. Intersecting Element: Open Smart Textbook (Bottom Right Overlapping Tablet) -->
+  <g filter="url(#soft-shadow)">
+    <!-- Left Page -->
+    <path d="M 270 230 C 290 220 330 222 355 226 L 355 295 C 330 291 290 289 270 299 Z" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1" />
+    <!-- Right Page -->
+    <path d="M 355 226 C 380 222 420 220 440 230 L 440 299 C 420 289 380 291 355 295 Z" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1" />
+    <!-- Book Spine & Cover Trim -->
+    <path d="M 266 232 C 290 221 330 223 355 228 C 380 223 420 221 444 232 L 442 304 C 420 293 380 294 355 298 C 330 294 290 293 268 304 Z" fill="url(#book-cover)" />
+    <!-- Book Bookmark Ribbon -->
+    <path d="M 355 227 L 355 275 L 362 268 L 369 275 L 369 227 Z" fill="#F59E0B" />
+    <!-- Text Lines on Pages -->
+    <line x1="285" y1="245" x2="335" y2="245" stroke="#CBD5E1" stroke-width="3" stroke-linecap="round" />
+    <line x1="285" y1="258" x2="325" y2="258" stroke="#CBD5E1" stroke-width="3" stroke-linecap="round" />
+    <line x1="285" y1="271" x2="338" y2="271" stroke="#CBD5E1" stroke-width="3" stroke-linecap="round" />
+    <line x1="375" y1="245" x2="425" y2="245" stroke="#3B82F6" stroke-width="3" stroke-linecap="round" />
+    <line x1="375" y1="258" x2="415" y2="258" stroke="#CBD5E1" stroke-width="3" stroke-linecap="round" />
+    <line x1="375" y1="271" x2="420" y2="271" stroke="#CBD5E1" stroke-width="3" stroke-linecap="round" />
+  </g>
+
+  <!-- 4. Intersecting Element: Floating Live Chat & Teacher Badge (Top Right) -->
+  <g filter="url(#soft-shadow)">
+    <!-- Chat Bubble -->
+    <rect x="330" y="55" width="115" height="58" rx="14" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" />
+    <!-- Chat Tail pointing toward tablet -->
+    <polygon points="345,113 360,113 338,125" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1" />
+    <polygon points="346,112 359,112 340,123" fill="#FFFFFF" />
+    
+    <!-- Verified Teacher Avatar Inside Chat -->
+    <circle cx="355" cy="84" r="14" fill="#3B82F6" />
+    <circle cx="355" cy="80" r="5" fill="#FFFFFF" />
+    <path d="M 346 94 A 9 9 0 0 1 364 94 Z" fill="#FFFFFF" />
+    
+    <!-- Verified Badge Check -->
+    <circle cx="365" cy="94" r="5.5" fill="#10B981" />
+    <path d="M 363 94 L 364.5 95.5 L 367.5 92.5" stroke="#FFFFFF" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+    
+    <!-- Speech text lines -->
+    <rect x="376" y="75" width="55" height="6" rx="3" fill="#1E293B" />
+    <rect x="376" y="87" width="38" height="5" rx="2.5" fill="#64748B" />
+  </g>
+
+  <!-- 5. Floating Interactive Particles & Learning Symbols -->
+  <!-- Atom / Science Orbit (Bottom Left) -->
+  <g transform="translate(100, 290)">
+    <circle cx="0" cy="0" r="7" fill="#6366F1" filter="url(#glow-shadow)" />
+    <ellipse cx="0" cy="0" rx="22" ry="8" fill="none" stroke="#818CF8" stroke-width="1.5" transform="rotate(30)" />
+    <ellipse cx="0" cy="0" rx="22" ry="8" fill="none" stroke="#818CF8" stroke-width="1.5" transform="rotate(-30)" />
+    <circle cx="16" cy="10" r="2.5" fill="#10B981" />
+  </g>
+
+  <!-- Floating Sparkles & Math Badges -->
+  <g transform="translate(425, 175)">
+    <circle cx="0" cy="0" r="16" fill="url(#gold-grad)" filter="url(#soft-shadow)" />
+    <path d="M -5 -5 L 5 5 M 5 -5 L -5 5" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" />
+  </g>
+
+  <!-- Pencil Stylus intersecting the tablet base -->
+  <g transform="translate(180, 255) rotate(-35)">
+    <rect x="0" y="0" width="14" height="65" rx="3" fill="#F59E0B" stroke="#D97706" stroke-width="1" />
+    <polygon points="0,0 14,0 7,-16" fill="#FDE68A" />
+    <polygon points="5,-11 9,-11 7,-16" fill="#1E293B" />
+    <rect x="0" y="55" width="14" height="10" rx="2" fill="#E2E8F0" />
+  </g>
+</svg>

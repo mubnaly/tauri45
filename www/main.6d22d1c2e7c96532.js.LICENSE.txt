@@ -1,0 +1,93 @@
+/*!
+ * (C) Ionic http://ionicframework.com - MIT License
+ */
+
+/*!
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+
+/*!
+ * MediaElement.js
+ * http://www.mediaelementjs.com/
+ *
+ * Wrapper that mimics native HTML5 MediaElement (audio and video)
+ * using a variety of technologies (pure JavaScript, iframe)
+ *
+ * Copyright 2010-2017, John Dyer (http://j.hn/)
+ * License: MIT
+ *
+ */
+
+/*!
+ * content-type
+ * Copyright(c) 2015 Douglas Christopher Wilson
+ * MIT Licensed
+ */
+
+/*!
+ * weakmap-polyfill v2.0.4 - ECMAScript6 WeakMap polyfill
+ * https://github.com/polygonplanet/weakmap-polyfill
+ * Copyright (c) 2015-2021 polygonplanet <polygon.planet.aqua@gmail.com>
+ * @license MIT
+ */
+
+/*! @vimeo/player v2.30.4 | (c) 2026 Vimeo | MIT License | https://github.com/vimeo/player.js */
+
+/*! Capacitor: https://capacitorjs.com/ - MIT License */
+
+/*! Native Promise Only
+      v0.8.1 (c) Kyle Simpson
+      MIT License: http://getify.mit-license.org
+  */
+
+/*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */
+
+/*! svg4everybody v2.1.9 | github.com/jonathantneal/svg4everybody */
+
+/*!__STENCIL_STATIC_IMPORT_SWITCH__*/
+
+/**
+ * @license Angular v17.3.12
+ * (c) 2010-2024 Google LLC. https://angular.io/
+ * License: MIT
+ */
+
+/**
+ * @licstart The following is the entire license notice for the
+ * JavaScript code in this page
+ *
+ * Copyright 2022 Mozilla Foundation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * @licend The above is the entire license notice for the
+ * JavaScript code in this page
+ */
+
+//! Copyright (c) JS Foundation and other contributors
+
+//! github.com/moment/moment-timezone
+
+//! license : MIT
+
+//! moment-timezone.js
+
+//! moment.js
+
+//! moment.js locale configuration
+
+//! version : 0.5.45

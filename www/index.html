@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="utf-8"/>
+    <title>Dalgamoun</title>
+
+    <base href="/"/>
+
+    <meta name="color-scheme" content="light dark"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <!-- <meta name="viewport"
+        content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" /> -->
+    <meta http-equiv="Content-Security-Policy" content="default-src * filesystem: cdvfile: file: data: gap: moodleappfs: blob: 'unsafe-inline' 'unsafe-eval' 'self' android-webview-video-poster: about:; frame-src * www.facebook.com web.facebook.com *.facebook.com *.fbcdn.net graph.facebook.com *.instagram.com">
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="msapplication-tap-highlight" content="no"/>
+
+    <link rel="icon" type="image/png" href="assets/icon/favicon.png"/>    <!--
+        Do NOT turn this back into a plain blocking <link rel="stylesheet">.
+
+        Chromium defers the execution of every <script> that follows a style sheet which
+        is still loading. googleapis.com is not always reachable (it is frequently slow
+        or blocked), and when this request hangs the HTML parser never reaches <body>:
+        Angular never boots, cordova's onDOMContentLoaded/deviceready never fire and the
+        app sits on a white screen after the splash for as long as the request is pending.
+        Loading it with rel="preload" keeps the fonts when the request succeeds while
+        never blocking the parser.
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Pacifico&amp;family=Reem+Kufi:wght@400;700&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'"/>
+    <noscript>
+        <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Reem+Kufi:wght@400;700&display=swap"
+            rel="stylesheet" />
+    </noscript>
+
+    <!-- add to homescreen for ios -->
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+
+    <!--
+        Do NOT add <script src="cordova.js"></script> back here.
+
+        Capacitor injects the Cordova runtime itself (JSExport.getCordovaJS reads
+        assets/public/cordova.js and JSInjector inserts it right after <head>), so the
+        tag is redundant. It is also fatal: WebViewLocalServer.handleLocalRequest answers
+        any request for /cordova.js with an empty response (null body), so a blocking
+        <script src="cordova.js"> never completes loading and the HTML parser stalls on
+        it forever. The page never reaches <body>, Angular never boots, cordova's
+        onDOMContentLoaded channel never fires (so deviceready never fires) and the app
+        is stuck on a white screen after the splash.
+    -->
+    <script src="assets/lib/mathjax/MathJax.js?delayStartupUntil=configured"></script>
+<link rel="stylesheet" href="styles.6c1603e038f8da38.css"></head>
+
+<body style="background-color:#ffffff;">
+    <app-root style="display:block;min-height:100vh;background-color:#ffffff;"></app-root>
+<script src="runtime.143c1ec21dd26bb3.js" type="module"></script><script src="polyfills.4834f7f1a0590339.js" type="module"></script><script src="scripts.5e79fb861b5ffab7.js" defer></script><script src="main.6d22d1c2e7c96532.js" type="module"></script></body>
+
+</html>

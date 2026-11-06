@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkapp=self.webpackChunkapp||[]).push([[5595],{65595:(n,e,t)=>{t.r(e),t.d(e,{PdfAnnotator:()=>a});const a=(0,t(15083).F3)("PdfAnnotator",{web:()=>t.e(3137).then(t.bind(t,43137)).then((n=>new n.PdfAnnotatorWeb))})}}]);

@@ -1,19 +1,19 @@
 {
     "$schema": "https://schema.tauri.app/config/2",
-    "productName": "Allama",
+    "productName": "Dalgamoun",
     "version": "4.5.0",
     "identifier": "online.allama.mobile",
     "build": {
         "beforeDevCommand": "npm run dev",
         "devUrl": "http://127.0.0.1:1420",
         "beforeBuildCommand": "npm run build",
-        "frontendDist": "../dist"
+        "frontendDist": "../www"
     },
     "app": {
         "windows": [
             {
                 "label": "main",
-                "title": "Allama",
+                "title": "Dalgamoun",
                 "width": 1280,
                 "height": 820,
                 "minWidth": 360,
@@ -25,7 +25,7 @@
             }
         ],
         "security": {
-            "csp": "default-src 'self'; img-src 'self' asset: http://asset.localhost data: https:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; script-src 'self'; frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; media-src 'self' http://127.0.0.1:* blob: https:; connect-src 'self' ipc: http://ipc.localhost http://127.0.0.1:* https://*.allama.online https://www.youtube.com"
+            "csp": null
         }
     },
     "bundle": {
