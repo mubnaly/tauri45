@@ -19,6 +19,8 @@
 //! The WebView therefore gets a normal HTTP URL that Plyr can seek in, while the
 //! bytes on disk are never decrypted as a whole.
 
+pub mod youtube;
+
 use crate::db::Database;
 use crate::security::crypto::Crypto;
 use serde::Serialize;
@@ -129,7 +131,7 @@ fn serve_media(inner: &Inner, request: tiny_http::Request, id: &str) -> Result<(
     let range = request
         .headers()
         .iter()
-        .find(|header| header.field.as_str().eq_ignore_ascii_case("range"))
+        .find(|header| header.field.as_str().as_str().eq_ignore_ascii_case("range"))
         .and_then(|header| parse_range(header.value.as_str(), total));
 
     let (start, len, status) = match range {

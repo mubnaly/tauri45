@@ -45,7 +45,7 @@ pub struct IntegrityReport {
 /// * Android: `FLAG_SECURE` through a JNI call into `MainActivity`.
 /// * iOS/macOS: reported as not enforced (needs a native plugin, see README).
 pub fn set_capture_protection(
-    window: &tauri::WebviewWindow,
+    _window: &tauri::WebviewWindow,
     enabled: bool,
 ) -> Result<ProtectionReport, String> {
     #[cfg(windows)]
@@ -55,7 +55,7 @@ pub fn set_capture_protection(
             SetWindowDisplayAffinity, WDA_MONITOR, WDA_NONE,
         };
 
-        let raw = window.hwnd().map_err(|e| format!("window handle: {e}"))?.0;
+        let raw = _window.hwnd().map_err(|e| format!("window handle: {e}"))?.0;
         let hwnd = raw as HWND;
         let affinity = if enabled { WDA_MONITOR } else { WDA_NONE };
 
