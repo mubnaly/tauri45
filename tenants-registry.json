@@ -1,0 +1,99 @@
+{
+  "tenants": [
+    {
+      "id": "maher",
+      "backend_url": "https://first.allama.online",
+      "company_id": 1,
+      "branding_api": "/webservice/rest/server.php?wsfunction=local_iomad_get_company_branding&moodlewsrestformat=json",
+      "bundle_id": "com.dawwar.online.allama.allama",
+      "use_local_brand_folder": true,
+      "local_brand_path": "brands/maher",
+      "description": "Al Maher Learning Platform"
+    },
+    {
+      "id": "dalgamoun",
+      "backend_url": "https://dalgamoun.allama.online",
+      "company_id": 2,
+      "branding_api": "/webservice/rest/server.php?wsfunction=local_iomad_get_company_branding&moodlewsrestformat=json",
+      "bundle_id": "com.dawwar.online.allama.dalgamoun",
+      "use_local_brand_folder": true,
+      "local_brand_path": "brands/dalgamoun",
+      "description": "Dalgamoun Learning Platform"
+    },
+    {
+      "id": "habiba",
+      "backend_url": "https://habiba.allama.online",
+      "company_id": 3,
+      "branding_api": "/webservice/rest/server.php?wsfunction=local_iomad_get_company_branding&moodlewsrestformat=json",
+      "bundle_id": "com.dawwar.online.allama.habiba",
+      "use_local_brand_folder": true,
+      "local_brand_path": "brands/habiba",
+      "description": "Habiba Learning Platform"
+    },
+    {
+      "id": "hety",
+      "backend_url": "https://hety.allama.online",
+      "company_id": 4,
+      "branding_api": "/webservice/rest/server.php?wsfunction=local_iomad_get_company_branding&moodlewsrestformat=json",
+      "bundle_id": "com.dawwar.online.allama.hety",
+      "use_local_brand_folder": true,
+      "local_brand_path": "brands/hety",
+      "description": "Hety Learning Platform"
+    },
+    {
+      "id": "ramadan",
+      "backend_url": "https://ramadan.allama.online",
+      "company_id": 5,
+      "branding_api": "/webservice/rest/server.php?wsfunction=local_iomad_get_company_branding&moodlewsrestformat=json",
+      "bundle_id": "com.dawwar.online.allama.ramadan",
+      "use_local_brand_folder": true,
+      "local_brand_path": "brands/ramadan",
+      "description": "Ramadan Learning Platform"
+    },
+    {
+      "id": "safwa",
+      "backend_url": "https://safwa.allama.online",
+      "company_id": 6,
+      "branding_api": "/webservice/rest/server.php?wsfunction=local_iomad_get_company_branding&moodlewsrestformat=json",
+      "bundle_id": "com.dawwar.online.allama.safwa",
+      "use_local_brand_folder": true,
+      "local_brand_path": "brands/safwa",
+      "description": "Al-Safwa Learning Platform"
+    },
+    {
+      "id": "daheeh",
+      "backend_url": "https://dalgamoun.allama.online",
+      "company_id": 7,
+      "branding_api": "/webservice/rest/server.php?wsfunction=local_iomad_get_company_branding&moodlewsrestformat=json",
+      "bundle_id": "com.dawwar.online.allama.daheeh",
+      "use_local_brand_folder": true,
+      "local_brand_path": "brands/daheeh",
+      "description": "Al-Daheeh Learning Platform"
+    },
+    {
+      "id": "zdoctor",
+      "backend_url": "https://zdoctor.allama.online",
+      "company_id": 8,
+      "branding_api": "/webservice/rest/server.php?wsfunction=local_iomad_get_company_branding&moodlewsrestformat=json",
+      "bundle_id": "com.dawwar.online.allama.zdoctor",
+      "use_local_brand_folder": true,
+      "local_brand_path": "brands/zdoctor",
+      "description": "Z Doctor Learning Platform"
+    },
+    {
+      "id": "zayyat",
+      "backend_url": "https://zayyat.allama.online",
+      "company_id": 2,
+      "branding_api": "/webservice/rest/server.php?wsfunction=local_iomad_get_company_branding&moodlewsrestformat=json",
+      "bundle_id": "com.dawwar.online.allama.zayyat",
+      "use_local_brand_folder": true,
+      "local_brand_path": "brands/zayyat",
+      "description": "Kafe AzZayyat Learning Platform"
+    }
+  ],
+  "metadata": {
+    "version": "1.0.0",
+    "created": "2024-06-02",
+    "description": "Tenant registry mapping for multi-tenant Moodle mobile app. Embedded into the Rust tenant manager at compile time."
+  }
+}
