@@ -7,7 +7,6 @@
         "core:default",
         "fs:default",
         "notification:default",
-        "clipboard-manager:default",
-        "network:default"
+        "clipboard-manager:default"
     ]
 }
