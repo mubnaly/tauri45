@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
     inputs:
       build_target:
-        description: 'Build Target ABIs (comma-separated or empty for all)'
+        description: 'Target ABIs (default: aarch64,armv7,x86_64)'
         required: false
         default: 'aarch64,armv7,x86_64'
         type: string
@@ -60,6 +60,12 @@ jobs:
           echo "ANDROID_HOME=$ANDROID_HOME" >> $GITHUB_ENV
           echo "ANDROID_SDK_ROOT=$ANDROID_HOME" >> $GITHUB_ENV
           
+          # Accept SDK licenses
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+          
+          # Ensure platform 35 and build-tools 35 are installed
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platforms;android-35" "build-tools;35.0.0" || true
+          
           # Detect or install NDK 26.1.10909125
           if [ -d "$ANDROID_HOME/ndk/26.1.10909125" ]; then
             echo "Using existing NDK 26.1.10909125"
@@ -70,6 +76,10 @@ jobs:
             echo "NDK_HOME=$ANDROID_HOME/ndk/26.1.10909125" >> $GITHUB_ENV
           fi
 
+      - name: Make Gradlew Executable
+        run: |
+          chmod +x src-tauri/gen/android/gradlew
+
       - name: Install Dependencies
         run: |
           npm ci || npm install
@@ -78,19 +88,24 @@ jobs:
         run: |
           npm run build
 
-      - name: Build Android APK & AAB
+      - name: Build Android APK (Tauri v2)
         env:
           NDK_HOME: ${{ env.NDK_HOME }}
         run: |
-          # Build APK and AAB with Tauri v2
-          npx tauri android build --apk --aab --ci
+          npx tauri android build --apk --ci
+
+      - name: Build Android AAB Bundle (Tauri v2)
+        env:
+          NDK_HOME: ${{ env.NDK_HOME }}
+        run: |
+          npx tauri android build --aab --ci
 
       - name: List Generated Android Outputs
         run: |
           echo "=== Generated APK Files ==="
-          find src-tauri/gen/android/app/build/outputs/apk -type f -name "*.apk" -exec ls -lh {} +
+          find src-tauri/gen/android/app/build/outputs/apk -type f -name "*.apk" -exec ls -lh {} + || true
           echo "=== Generated AAB Bundle Files ==="
-          find src-tauri/gen/android/app/build/outputs/bundle -type f -name "*.aab" -exec ls -lh {} +
+          find src-tauri/gen/android/app/build/outputs/bundle -type f -name "*.aab" -exec ls -lh {} + || true
 
       - name: Upload Android APK Artifacts
         uses: actions/upload-artifact@v4
