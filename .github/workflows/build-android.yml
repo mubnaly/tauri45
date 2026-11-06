@@ -105,6 +105,32 @@ jobs:
         run: |
           npx tauri android build --aab --ci
 
+      - name: Sign Android APK and AAB
+        run: |
+          echo "=== Generating Release Signing Key ==="
+          keytool -genkeypair -v -keystore release.keystore -alias allama \
+            -keyalg RSA -keysize 2048 -validity 10000 \
+            -storepass "allama123456" -keypass "allama123456" \
+            -dname "CN=Allama, OU=App, O=Allama, L=Cairo, ST=Cairo, C=EG"
+
+          APKSIGNER=$(find $ANDROID_HOME/build-tools -name apksigner | sort -V | tail -n 1)
+          echo "Using apksigner at: $APKSIGNER"
+
+          echo "=== Signing APKs ==="
+          for apk in $(find src-tauri/gen/android/app/build/outputs/apk -type f -name "*unsigned.apk"); do
+            signed_apk="${apk%-unsigned.apk}-signed.apk"
+            echo "Signing $apk -> $signed_apk"
+            $APKSIGNER sign --ks release.keystore --ks-pass pass:allama123456 --key-pass pass:allama123456 --ks-key-alias allama --out "$signed_apk" "$apk"
+            $APKSIGNER verify -v "$signed_apk"
+          done
+
+          echo "=== Signing AAB Bundles ==="
+          for aab in $(find src-tauri/gen/android/app/build/outputs/bundle -type f -name "*.aab"); do
+            echo "Signing AAB $aab"
+            jarsigner -keystore release.keystore -storepass allama123456 -keypass allama123456 "$aab" allama
+            jarsigner -verify "$aab"
+          done
+
       - name: List Generated Android Outputs
         run: |
           echo "=== Generated APK Files ==="
