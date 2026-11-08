@@ -1,0 +1,1 @@
+{"default":{"identifier":"default","description":"Default capability for the Allama main window: local SQLite, encrypted media files, notifications, clipboard and network state.","local":true,"windows":["main"],"permissions":["core:default","fs:default","notification:default","clipboard-manager:default"]}}

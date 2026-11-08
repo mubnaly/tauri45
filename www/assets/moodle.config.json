@@ -1,0 +1,115 @@
+{
+    "app_id": "com.dawwar.online.allama.dalgamoun",
+    "appname": "Dalgamoun",
+    "versioncode": 10000,
+    "versionname": "1.0.0",
+    "cache_update_frequency_usually": 420000,
+    "cache_update_frequency_often": 60000,
+    "cache_update_frequency_sometimes": 3600000,
+    "cache_update_frequency_rarely": 43200000,
+    "default_lang": "en",
+    "languages": {
+        "en": "English",
+        "ar": "العربية"
+    },
+    "wsextservice": "",
+    "wsservice": "moodle_mobile_app",
+    "demo_sites": {},
+    "defaultZoomLevel": "medium",
+    "zoomlevels": {
+        "tiny": 70,
+        "xsmall": 77.5,
+        "small": 85,
+        "medium": 92.5,
+        "large": 100,
+        "verylarge": 107.5,
+        "huge": 115
+    },
+    "customurlscheme": "BitsBlocks",
+    "siteurl": "https://dalgamoun.allama.online",
+    "sitename": "Dalgamoun",
+    "sites": [
+        {
+            "url": "https://dalgamoun.allama.online",
+            "name": "Dalgamoun"
+        }
+    ],
+    "multisitesdisplay": "",
+    "sitefindersettings": {},
+    "skipssoconfirmation": false,
+    "onlyallowlistedsites": true,
+    "forcedefaultlanguage": false,
+    "privacypolicy": "https://moodle.net/moodle-app-privacy/",
+    "notificoncolor": "#2563EB",
+    "statusbarbg": "#2563EB",
+    "enableanalytics": false,
+    "enableonboarding": false,
+    "forceColorScheme": "",
+    "forceLoginLogo": true,
+    "statusbarlighttext": true,
+    "statusbarbgios": "#2563EB",
+    "statusbarlighttextios": true,
+    "statusbarbgandroid": "#2563EB",
+    "statusbarlighttextandroid": true,
+    "statusbarbgremotetheme": "#000000",
+    "statusbarlighttextremotetheme": true,
+    "ioswebviewscheme": "moodleappfs",
+    "appstores": {},
+    "compilationtime": 0,
+    "lastcommit": "",
+    "wsrequestqueuelimit": 10,
+    "wsrequestqueuedelay": 100,
+    "calendarreminderdefaultvalue": 3600,
+    "toastDurations": {
+        "short": 2000,
+        "long": 3500,
+        "sticky": 0
+    },
+    "disableTokenFile": false,
+    "iconsPrefixes": {
+        "font-awesome": {
+            "brands": [
+                "fab"
+            ],
+            "regular": [
+                "far"
+            ],
+            "solid": [
+                "fa",
+                "fas"
+            ]
+        },
+        "moodle": {
+            "font-awesome": [
+                "fam"
+            ],
+            "moodle": [
+                "moodle"
+            ]
+        },
+        "Outfit/static": "outfit",
+        "Reem_Kufi/static": "reem",
+        "Roboto/static": "roboto"
+    },
+    "clearIABSessionWhenAutoLogin": "android",
+    "facebook": {
+        "appId": "1004453675661874",
+        "clientToken": "e93455aa481de2dd65a45f9800a3285d"
+    },
+    "appNameEn": "Dalgamoun",
+    "appNameAr": "الدلجمون",
+    "devCompanyName": "Open Lines",
+    "features": {
+        "feed": true,
+        "enableWatermark": true,
+        "enableScreenshotPrevention": true,
+        "hideDownloadIcons": true,
+        "forceLoginLogo": true,
+        "brandNameOnCard": false,
+        "downloads": true
+    },
+    "fonts": {
+        "brandNameEn": "Geomini",
+        "brandNameAr": "Marhey"
+    }
+}

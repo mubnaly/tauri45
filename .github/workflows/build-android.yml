@@ -74,11 +74,30 @@ jobs:
           # Detect or install NDK 26.1.10909125
           if [ -d "$ANDROID_HOME/ndk/26.1.10909125" ]; then
             echo "Using existing NDK 26.1.10909125"
-            echo "NDK_HOME=$ANDROID_HOME/ndk/26.1.10909125" >> $GITHUB_ENV
+            NDK_PATH="$ANDROID_HOME/ndk/26.1.10909125"
           else
             echo "Installing NDK 26.1.10909125..."
             yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "ndk;26.1.10909125"
-            echo "NDK_HOME=$ANDROID_HOME/ndk/26.1.10909125" >> $GITHUB_ENV
+            NDK_PATH="$ANDROID_HOME/ndk/26.1.10909125"
+          fi
+          echo "NDK_HOME=$NDK_PATH" >> $GITHUB_ENV
+          
+          # Add NDK LLVM toolchain bin to PATH and provide compatibility symlinks for ranlib/ar
+          TOOLCHAIN_BIN="$NDK_PATH/toolchains/llvm/prebuilt/linux-x86_64/bin"
+          echo "$TOOLCHAIN_BIN" >> $GITHUB_PATH
+          if [ -f "$TOOLCHAIN_BIN/llvm-ranlib" ]; then
+            ln -sf "$TOOLCHAIN_BIN/llvm-ranlib" "$TOOLCHAIN_BIN/aarch64-linux-android-ranlib" || true
+            ln -sf "$TOOLCHAIN_BIN/llvm-ranlib" "$TOOLCHAIN_BIN/armv7a-linux-androideabi-ranlib" || true
+            ln -sf "$TOOLCHAIN_BIN/llvm-ranlib" "$TOOLCHAIN_BIN/arm-linux-androideabi-ranlib" || true
+            ln -sf "$TOOLCHAIN_BIN/llvm-ranlib" "$TOOLCHAIN_BIN/x86_64-linux-android-ranlib" || true
+            ln -sf "$TOOLCHAIN_BIN/llvm-ranlib" "$TOOLCHAIN_BIN/i686-linux-android-ranlib" || true
+          fi
+          if [ -f "$TOOLCHAIN_BIN/llvm-ar" ]; then
+            ln -sf "$TOOLCHAIN_BIN/llvm-ar" "$TOOLCHAIN_BIN/aarch64-linux-android-ar" || true
+            ln -sf "$TOOLCHAIN_BIN/llvm-ar" "$TOOLCHAIN_BIN/armv7a-linux-androideabi-ar" || true
+            ln -sf "$TOOLCHAIN_BIN/llvm-ar" "$TOOLCHAIN_BIN/arm-linux-androideabi-ar" || true
+            ln -sf "$TOOLCHAIN_BIN/llvm-ar" "$TOOLCHAIN_BIN/x86_64-linux-android-ar" || true
+            ln -sf "$TOOLCHAIN_BIN/llvm-ar" "$TOOLCHAIN_BIN/i686-linux-android-ar" || true
           fi
 
       - name: Make Gradlew Executable
