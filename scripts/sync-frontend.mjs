@@ -7,11 +7,16 @@ const targetWww = resolve(__dirname, '../www');
 const sourceWww = resolve(__dirname, '../../mobile45/www');
 const sourceConfig = resolve(__dirname, '../../mobile45/moodle.config.json');
 
+// Only copy from sourceWww if source exists and is newer or index.html is missing
 if (existsSync(sourceWww)) {
     try {
-        console.log(`[sync-frontend] Syncing latest build from ${sourceWww} -> ${targetWww}...`);
-        cpSync(sourceWww, targetWww, { recursive: true, force: true });
-        console.log('[sync-frontend] Frontend assets synced successfully.');
+        console.log(`[sync-frontend] Checking source assets...`);
+        // We sync if target doesn't exist
+        if (!existsSync(resolve(targetWww, 'index.html'))) {
+            console.log(`[sync-frontend] Syncing latest build from ${sourceWww} -> ${targetWww}...`);
+            cpSync(sourceWww, targetWww, { recursive: true, force: true });
+            console.log('[sync-frontend] Frontend assets synced successfully.');
+        }
     } catch (err) {
         console.warn('[sync-frontend] Could not copy from mobile45/www, using existing www:', err.message);
     }
@@ -32,21 +37,112 @@ if (existsSync(sourceConfig) && existsSync(assetsDir)) {
     console.log('[sync-frontend] Copied moodle.config.json -> www/assets/moodle.config.json');
 }
 
-// 2. Patch index.html with base href and Tauri-Cordova-SQLite bridge
+// 2. Patch index.html with base href and Tauri-Cordova-NativeHttp-SQLite bridge
 let html = readFileSync(targetIndex, 'utf8');
 
 // Replace base href
 html = html.replace(/<base\s+href="[^"]*"\s*\/?>/i, '<base href="./">');
 
 const bridgeScript = `
-    <!-- Tauri Runtime & Cordova/SQLite Compatibility Bridge -->
+    <!-- Tauri Runtime & Cordova/NativeHttp/SQLite Compatibility Bridge -->
     <script>
         (function() {
             window.isTauri = true;
             window.cordova = window.cordova || {
                 platformId: 'android',
                 version: '12.0.0',
-                plugins: {}
+                plugins: {},
+                plugin: {}
+            };
+            window.cordova.plugin = window.cordova.plugin || {};
+            window.cordova.plugins = window.cordova.plugins || {};
+
+            // NativeHttp ErrorCode & HTTP shim to prevent "Cannot read properties of null (reading 'SSL_EXCEPTION')"
+            var httpShim = {
+                ErrorCode: {
+                    GENERIC: -1,
+                    SSL_EXCEPTION: -2,
+                    SERVER_NOT_FOUND: -3,
+                    TIMEOUT: -4,
+                    UNSUPPORTED_URL: -5,
+                    NOT_CONNECTED: -6,
+                    POST_PROCESSING_FAILED: -7,
+                    ABORTED: -8
+                },
+                setServerTrustMode: function(mode, success, error) { if (success) success(); },
+                setClientAuthMode: function(mode, opts, success, error) { if (success) success(); },
+                setHeader: function(host, header, value, success, error) { if (success) success(); },
+                setDataSerializer: function(serializer, success, error) { if (success) success(); },
+                setRequestTimeout: function(timeout, success, error) { if (success) success(); },
+                sendRequest: function(url, options, success, error) {
+                    var method = (options && options.method) ? options.method.toUpperCase() : 'GET';
+                    var reqHeaders = (options && options.headers) || {};
+                    var body = (method !== 'GET' && method !== 'HEAD') ? (options && options.data) : undefined;
+
+                    fetch(url, {
+                        method: method,
+                        headers: reqHeaders,
+                        body: body
+                    })
+                    .then(function(res) {
+                        return res.text().then(function(text) {
+                            var headers = {};
+                            res.headers.forEach(function(val, key) { headers[key] = val; });
+                            if (success) {
+                                success({
+                                    status: res.status,
+                                    data: text,
+                                    headers: headers,
+                                    url: res.url
+                                });
+                            }
+                        });
+                    })
+                    .catch(function(err) {
+                        if (error) {
+                            error({
+                                status: -1,
+                                error: (err && err.message) || 'Network error'
+                            });
+                        }
+                    });
+                }
+            };
+            window.cordova.plugin.http = httpShim;
+            window.cordova.plugins.http = httpShim;
+
+            // Device Shim
+            window.device = window.device || {
+                available: true,
+                platform: 'Android',
+                version: '14.0',
+                uuid: 'tauri-app-device',
+                cordova: '12.0.0',
+                model: 'Tauri Desktop',
+                manufacturer: 'Allama',
+                isVirtual: false,
+                serial: 'unknown'
+            };
+
+            // StatusBar Shim
+            window.StatusBar = window.StatusBar || {
+                isVisible: true,
+                overlaysWebView: function() {},
+                styleDefault: function() {},
+                styleLightContent: function() {},
+                styleBlackTranslucent: function() {},
+                styleBlackOpaque: function() {},
+                backgroundColorByName: function() {},
+                backgroundColorByHexString: function() {},
+                hide: function() {},
+                show: function() {}
+            };
+
+            // Keyboard Shim
+            window.Keyboard = window.Keyboard || {
+                hide: function() {},
+                show: function() {},
+                isVisible: false
             };
 
             function createResultSet(rows, affected) {
@@ -172,14 +268,14 @@ const bridgeScript = `
     </script>
 `;
 
-if (!html.includes('Tauri Runtime & Cordova/SQLite Compatibility Bridge')) {
-    html = html.replace('<head>', '<head>\n' + bridgeScript);
-    writeFileSync(targetIndex, html);
-    console.log('[sync-frontend] Injected Tauri runtime bridge into www/index.html');
+// Remove previous bridge if present and re-inject updated bridge
+if (html.includes('<!-- Tauri Runtime')) {
+    html = html.replace(/<!-- Tauri Runtime[\s\S]*?<\/script>/, bridgeScript.trim());
 } else {
-    writeFileSync(targetIndex, html);
-    console.log('[sync-frontend] www/index.html base href updated.');
+    html = html.replace('<head>', '<head>\n' + bridgeScript);
 }
+writeFileSync(targetIndex, html);
+console.log('[sync-frontend] Injected updated Tauri runtime bridge (with NativeHttp ErrorCode) into www/index.html');
 
 // 3. Patch sqlite-wasm paths in all JS chunks from "/assets/lib/sqlite3/" to "assets/lib/sqlite3/"
 const ABSOLUTE = ['"/assets/lib/sqlite3/', "'/assets/lib/sqlite3/"];

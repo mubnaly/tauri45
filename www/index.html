@@ -3,14 +3,105 @@
 
 <head>
 
-    <!-- Tauri Runtime & Cordova/SQLite Compatibility Bridge -->
+    <!-- Tauri Runtime & Cordova/NativeHttp/SQLite Compatibility Bridge -->
     <script>
         (function() {
             window.isTauri = true;
             window.cordova = window.cordova || {
                 platformId: 'android',
                 version: '12.0.0',
-                plugins: {}
+                plugins: {},
+                plugin: {}
+            };
+            window.cordova.plugin = window.cordova.plugin || {};
+            window.cordova.plugins = window.cordova.plugins || {};
+
+            // NativeHttp ErrorCode & HTTP shim to prevent "Cannot read properties of null (reading 'SSL_EXCEPTION')"
+            var httpShim = {
+                ErrorCode: {
+                    GENERIC: -1,
+                    SSL_EXCEPTION: -2,
+                    SERVER_NOT_FOUND: -3,
+                    TIMEOUT: -4,
+                    UNSUPPORTED_URL: -5,
+                    NOT_CONNECTED: -6,
+                    POST_PROCESSING_FAILED: -7,
+                    ABORTED: -8
+                },
+                setServerTrustMode: function(mode, success, error) { if (success) success(); },
+                setClientAuthMode: function(mode, opts, success, error) { if (success) success(); },
+                setHeader: function(host, header, value, success, error) { if (success) success(); },
+                setDataSerializer: function(serializer, success, error) { if (success) success(); },
+                setRequestTimeout: function(timeout, success, error) { if (success) success(); },
+                sendRequest: function(url, options, success, error) {
+                    var method = (options && options.method) ? options.method.toUpperCase() : 'GET';
+                    var reqHeaders = (options && options.headers) || {};
+                    var body = (method !== 'GET' && method !== 'HEAD') ? (options && options.data) : undefined;
+
+                    fetch(url, {
+                        method: method,
+                        headers: reqHeaders,
+                        body: body
+                    })
+                    .then(function(res) {
+                        return res.text().then(function(text) {
+                            var headers = {};
+                            res.headers.forEach(function(val, key) { headers[key] = val; });
+                            if (success) {
+                                success({
+                                    status: res.status,
+                                    data: text,
+                                    headers: headers,
+                                    url: res.url
+                                });
+                            }
+                        });
+                    })
+                    .catch(function(err) {
+                        if (error) {
+                            error({
+                                status: -1,
+                                error: (err && err.message) || 'Network error'
+                            });
+                        }
+                    });
+                }
+            };
+            window.cordova.plugin.http = httpShim;
+            window.cordova.plugins.http = httpShim;
+
+            // Device Shim
+            window.device = window.device || {
+                available: true,
+                platform: 'Android',
+                version: '14.0',
+                uuid: 'tauri-app-device',
+                cordova: '12.0.0',
+                model: 'Tauri Desktop',
+                manufacturer: 'Allama',
+                isVirtual: false,
+                serial: 'unknown'
+            };
+
+            // StatusBar Shim
+            window.StatusBar = window.StatusBar || {
+                isVisible: true,
+                overlaysWebView: function() {},
+                styleDefault: function() {},
+                styleLightContent: function() {},
+                styleBlackTranslucent: function() {},
+                styleBlackOpaque: function() {},
+                backgroundColorByName: function() {},
+                backgroundColorByHexString: function() {},
+                hide: function() {},
+                show: function() {}
+            };
+
+            // Keyboard Shim
+            window.Keyboard = window.Keyboard || {
+                hide: function() {},
+                show: function() {},
+                isVisible: false
             };
 
             function createResultSet(rows, affected) {
