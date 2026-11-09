@@ -94,6 +94,7 @@ pub fn run() {
             // Web services
             commands::network::ws_call,
             commands::network::ws_call_raw,
+            commands::network::native_http_request,
             // Media / video
             commands::media::media_server_info,
             commands::media::media_import,

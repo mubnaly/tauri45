@@ -16,7 +16,7 @@
             window.cordova.plugin = window.cordova.plugin || {};
             window.cordova.plugins = window.cordova.plugins || {};
 
-            // NativeHttp ErrorCode & HTTP shim to prevent "Cannot read properties of null (reading 'SSL_EXCEPTION')"
+            // NativeHttp ErrorCode & HTTP shim to bridge requests cleanly to Tauri native reqwest / fetch
             var httpShim = {
                 ErrorCode: {
                     GENERIC: -1,
@@ -35,36 +35,140 @@
                 setRequestTimeout: function(timeout, success, error) { if (success) success(); },
                 sendRequest: function(url, options, success, error) {
                     var method = (options && options.method) ? options.method.toUpperCase() : 'GET';
-                    var reqHeaders = (options && options.headers) || {};
-                    var body = (method !== 'GET' && method !== 'HEAD') ? (options && options.data) : undefined;
+                    var reqHeaders = Object.assign({}, (options && options.headers) || {});
+                    var serializer = (options && options.serializer) || 'urlencoded';
+                    var responseType = (options && options.responseType) || 'json';
+                    var body = undefined;
 
-                    fetch(url, {
-                        method: method,
-                        headers: reqHeaders,
-                        body: body
-                    })
-                    .then(function(res) {
-                        return res.text().then(function(text) {
-                            var headers = {};
-                            res.headers.forEach(function(val, key) { headers[key] = val; });
-                            if (success) {
-                                success({
-                                    status: res.status,
-                                    data: text,
-                                    headers: headers,
-                                    url: res.url
-                                });
+                    // 1. Process query parameters
+                    if (options && options.params && typeof options.params === 'object') {
+                        var qParts = [];
+                        for (var pk in options.params) {
+                            if (Object.prototype.hasOwnProperty.call(options.params, pk) && options.params[pk] != null) {
+                                qParts.push(encodeURIComponent(pk) + '=' + encodeURIComponent(options.params[pk]));
                             }
-                        });
-                    })
-                    .catch(function(err) {
-                        if (error) {
-                            error({
-                                status: -1,
-                                error: (err && err.message) || 'Network error'
+                        }
+                        if (qParts.length > 0) {
+                            url += (url.indexOf('?') >= 0 ? '&' : '?') + qParts.join('&');
+                        }
+                    }
+
+                    // 2. Serialize request body properly
+                    if (method !== 'GET' && method !== 'HEAD' && options && options.data !== undefined && options.data !== null) {
+                        if (serializer === 'json') {
+                            body = (typeof options.data === 'string') ? options.data : JSON.stringify(options.data);
+                            if (!reqHeaders['Content-Type'] && !reqHeaders['content-type']) {
+                                reqHeaders['Content-Type'] = 'application/json; charset=utf-8';
+                            }
+                        } else if (serializer === 'urlencoded') {
+                            if (typeof options.data === 'object') {
+                                var parts = [];
+                                for (var k in options.data) {
+                                    if (Object.prototype.hasOwnProperty.call(options.data, k) && options.data[k] != null) {
+                                        parts.push(encodeURIComponent(k) + '=' + encodeURIComponent(options.data[k]));
+                                    }
+                                }
+                                body = parts.join('&');
+                            } else {
+                                body = String(options.data);
+                            }
+                            if (!reqHeaders['Content-Type'] && !reqHeaders['content-type']) {
+                                reqHeaders['Content-Type'] = 'application/x-www-form-urlencoded; charset=utf-8';
+                            }
+                        } else {
+                            body = (typeof options.data === 'string') ? options.data : JSON.stringify(options.data);
+                        }
+                    }
+
+                    // Helper to format success response as required by CoreNativeToAngularHttpResponse
+                    function deliverSuccess(status, rawData, headers, respUrl) {
+                        var parsedData = rawData;
+                        if (responseType === 'json') {
+                            if (typeof rawData === 'string') {
+                                try {
+                                    parsedData = JSON.parse(rawData);
+                                } catch (pErr) {
+                                    console.warn('[NativeHttp Bridge] Could not parse JSON response:', pErr);
+                                    parsedData = rawData;
+                                }
+                            }
+                        }
+                        if (success) {
+                            success({
+                                status: status,
+                                data: parsedData,
+                                headers: headers || {},
+                                url: respUrl || url
                             });
                         }
-                    });
+                    }
+
+                    // Helper to format error response
+                    function deliverError(status, errText) {
+                        var code = -1;
+                        var sErr = String(errText || '');
+                        if (sErr.indexOf('SSL') >= 0 || sErr.indexOf('certificate') >= 0) {
+                            code = -2;
+                        } else if (sErr.indexOf('timed out') >= 0 || sErr.indexOf('timeout') >= 0) {
+                            code = -4;
+                        } else if (sErr.indexOf('not found') >= 0 || sErr.indexOf('dns') >= 0) {
+                            code = -3;
+                        }
+                        if (error) {
+                            error({
+                                status: status && status > 0 ? status : code,
+                                error: sErr || 'Network error'
+                            });
+                        }
+                    }
+
+                    // Try Tauri Native reqwest IPC first (no CORS, native speed and reliability)
+                    if (window.__TAURI__ && window.__TAURI__.core && window.__TAURI__.core.invoke) {
+                        var reqPayload = {
+                            method: method,
+                            url: url,
+                            headers: reqHeaders,
+                            body: body,
+                            timeout: (options && options.timeout) || 30
+                        };
+
+                        window.__TAURI__.core.invoke('native_http_request', { request: reqPayload })
+                            .then(function(res) {
+                                deliverSuccess(res.status, res.data, res.headers, res.url);
+                            })
+                            .catch(function(ipcErr) {
+                                console.warn('[NativeHttp Bridge] IPC failed, falling back to fetch:', ipcErr);
+                                doFetch();
+                            });
+                    } else {
+                        doFetch();
+                    }
+
+                    function doFetch() {
+                        var fetchOpts = {
+                            method: method,
+                            headers: reqHeaders
+                        };
+                        if (body !== undefined && method !== 'GET' && method !== 'HEAD') {
+                            fetchOpts.body = body;
+                        }
+
+                        fetch(url, fetchOpts)
+                            .then(function(res) {
+                                return res.text().then(function(text) {
+                                    var hdrs = {};
+                                    try {
+                                        if (res.headers && res.headers.forEach) {
+                                            res.headers.forEach(function(val, key) { hdrs[key] = val; });
+                                        }
+                                    } catch (_) {}
+                                    deliverSuccess(res.status, text, hdrs, res.url);
+                                });
+                            })
+                            .catch(function(fErr) {
+                                deliverError(-1, (fErr && fErr.message) || 'Network error');
+                            });
+                    }
                 }
             };
             window.cordova.plugin.http = httpShim;
