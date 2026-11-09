@@ -330,7 +330,7 @@
 
             function createResultSet(rows, affected) {
                 var list = Array.isArray(rows) ? rows : [];
-                return {
+                var res = {
                     rows: {
                         length: list.length,
                         item: function(i) { return list[i]; }
@@ -338,9 +338,21 @@
                     rowsAffected: affected || 0,
                     insertId: 0
                 };
+                for (var i = 0; i < list.length; i++) {
+                    res.rows[i] = list[i];
+                }
+                return res;
             }
 
             // High compatibility SQLite plugin bridge
+            
+            // Desktop keyboard reload (F5 / Ctrl+R)
+            window.addEventListener('keydown', function(e) {
+                if (e.key === 'F5' || (e.ctrlKey && (e.key === 'r' || e.key === 'R'))) {
+                    e.preventDefault();
+                    window.location.reload();
+                }
+            });
             window.sqlitePlugin = window.sqlitePlugin || {
                 openDatabase: function(options, successCallback, errorCallback) {
                     var dbName = (options && options.name) || 'allama.db';
@@ -349,8 +361,8 @@
                         executeSql: function(sql, params, success, error) {
                             params = params || [];
                             if (window.__TAURI__ && window.__TAURI__.core && window.__TAURI__.core.invoke) {
-                                var isSelect = /^\s*SELECT/i.test(sql);
-                                var cmd = isSelect ? 'db_query' : 'db_execute';
+                                var isQuery = /^\s*(SELECT|PRAGMA|WITH)\b/i.test(sql);
+                                var cmd = isQuery ? 'db_query' : 'db_execute';
                                 window.__TAURI__.core.invoke(cmd, { sql: sql, params: params })
                                     .then(function(res) {
                                         var rows = Array.isArray(res) ? res : [];
