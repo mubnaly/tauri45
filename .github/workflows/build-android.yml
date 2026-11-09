@@ -161,7 +161,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: allama-android-apk
-          path: src-tauri/gen/android/app/build/outputs/apk/**/*.apk
+          path: src-tauri/gen/android/app/build/outputs/apk/**/*-signed.apk
           retention-days: 30
 
       - name: Upload Android AAB Artifacts
@@ -176,7 +176,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            src-tauri/gen/android/app/build/outputs/apk/**/*.apk
+            src-tauri/gen/android/app/build/outputs/apk/**/*-signed.apk
             src-tauri/gen/android/app/build/outputs/bundle/**/*.aab
           draft: false
           prerelease: false
