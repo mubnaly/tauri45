@@ -16,6 +16,126 @@
             window.cordova.plugin = window.cordova.plugin || {};
             window.cordova.plugins = window.cordova.plugins || {};
 
+            // Generic safe cordova.exec shim
+            window.cordova.exec = window.cordova.exec || function(success, fail, service, action, args) {
+                if (typeof success === 'function') {
+                    setTimeout(function() { success(); }, 0);
+                }
+            };
+
+            // MoodleApp Plugin suite (SecureStorage, Diagnostic, InstallReferrer)
+            var secureStorageShim = {
+                get: function(names, collection) {
+                    if (typeof names === 'string') names = [names];
+                    var res = {};
+                    for (var i = 0; i < names.length; i++) {
+                        var k = names[i];
+                        if (!k) continue;
+                        var val = localStorage.getItem('SecureStorage_' + collection + '_' + k);
+                        if (val !== null) res[k] = val;
+                    }
+                    return Promise.resolve(res);
+                },
+                store: function(data, collection) {
+                    for (var k in data) {
+                        if (data[k] !== undefined && data[k] !== null) {
+                            localStorage.setItem('SecureStorage_' + collection + '_' + k, String(data[k]));
+                        }
+                    }
+                    return Promise.resolve();
+                },
+                delete: function(names, collection) {
+                    if (typeof names === 'string') names = [names];
+                    for (var i = 0; i < names.length; i++) {
+                        localStorage.removeItem('SecureStorage_' + collection + '_' + names[i]);
+                    }
+                    return Promise.resolve();
+                },
+                deleteCollection: function(collection) {
+                    var prefix = 'SecureStorage_' + collection + '_';
+                    var toRemove = [];
+                    for (var i = 0; i < localStorage.length; i++) {
+                        var key = localStorage.key(i);
+                        if (key && key.indexOf(prefix) === 0) {
+                            toRemove.push(key);
+                        }
+                    }
+                    toRemove.forEach(function(k) { localStorage.removeItem(k); });
+                    return Promise.resolve();
+                }
+            };
+
+            var moodleAppPlugins = {
+                secureStorage: secureStorageShim,
+                diagnostic: {
+                    isLocationEnabled: function() { return Promise.resolve(false); },
+                    switchToLocationSettings: function() { return Promise.resolve(); },
+                    switchToSettings: function() { return Promise.resolve(); },
+                    getLocationAuthorizationStatus: function() { return Promise.resolve('authorized'); },
+                    requestLocationAuthorization: function() { return Promise.resolve('authorized'); },
+                    requestMicrophoneAuthorization: function() { return Promise.resolve('authorized'); },
+                    getPermissionsAuthorizationStatus: function() { return Promise.resolve({}); },
+                    requestRuntimePermission: function() { return Promise.resolve('authorized'); },
+                    getInstance: function() { return Promise.resolve(this); }
+                },
+                installReferrer: {
+                    getReferrer: function() { return Promise.resolve(''); }
+                }
+            };
+
+            window.cordova.MoodleApp = moodleAppPlugins;
+            window.MoodleApp = moodleAppPlugins;
+
+            // InAppBrowser shim with full event and window support
+            var origWindowOpen = window.open ? window.open.bind(window) : function() {};
+            window.cordova.InAppBrowser = {
+                open: function(url, target, options) {
+                    var win = null;
+                    try {
+                        win = origWindowOpen(url, target || '_blank');
+                    } catch (_) {}
+                    return {
+                        addEventListener: function(ev, cb) {},
+                        removeEventListener: function(ev, cb) {},
+                        close: function() { if (win) win.close(); },
+                        show: function() {},
+                        hide: function() {},
+                        executeScript: function(details, cb) { if (cb) cb([null]); },
+                        insertCSS: function(details, cb) { if (cb) cb(); },
+                        on: function() {
+                            return {
+                                subscribe: function(fn) {
+                                    return { unsubscribe: function() {} };
+                                }
+                            };
+                        }
+                    };
+                }
+            };
+
+            // Additional plugins
+            window.cordova.plugins.fileOpener2 = window.cordova.plugins.fileOpener2 || {
+                open: function(filePath, mimeType, callbacks) {
+                    if (callbacks && callbacks.success) callbacks.success();
+                },
+                showOpenWithDialog: function(filePath, mimeType, callbacks) {
+                    if (callbacks && callbacks.success) callbacks.success();
+                }
+            };
+
+            window.cordova.plugins.clipboard = window.cordova.plugins.clipboard || {
+                copy: function(text, success, fail) {
+                    if (navigator.clipboard) {
+                        navigator.clipboard.writeText(text).then(success).catch(fail);
+                    } else if (success) success();
+                },
+                paste: function(success, fail) {
+                    if (navigator.clipboard) {
+                        navigator.clipboard.readText().then(success).catch(fail);
+                    } else if (success) success('');
+                }
+            };
+
             // NativeHttp ErrorCode & HTTP shim to bridge requests cleanly to Tauri native reqwest / fetch
             var httpShim = {
                 ErrorCode: {
